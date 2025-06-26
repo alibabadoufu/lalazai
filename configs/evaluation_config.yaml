@@ -1,0 +1,359 @@
+# Evaluation Configuration for Intelligent Research Recommendation System
+# This file configures both offline and online evaluation systems
+
+# Offline Evaluation Configuration
+offline_evaluation:
+  enabled: true
+  ground_truth_path: "data/ground_truth/evaluation_samples.json"
+  parallel_execution: true
+  max_workers: 4
+  
+  # Individual evaluator configurations
+  evaluators:
+    # LLM Feature Extractors
+    llm_bloomberg_chat:
+      enabled: true
+      interval: 24  # hours
+      ground_truth_path: "data/ground_truth/bloomberg_features.json"
+      thresholds:
+        min_accuracy: 0.7
+        min_consistency: 0.8
+        max_latency_seconds: 30
+        min_token_efficiency: 0.01
+    
+    llm_refinitiv_chat:
+      enabled: true
+      interval: 24
+      ground_truth_path: "data/ground_truth/refinitiv_features.json"
+      thresholds:
+        min_accuracy: 0.7
+        min_consistency: 0.8
+        max_latency_seconds: 30
+        min_token_efficiency: 0.01
+    
+    llm_crm:
+      enabled: true
+      interval: 24
+      ground_truth_path: "data/ground_truth/crm_features.json"
+      thresholds:
+        min_accuracy: 0.75
+        min_consistency: 0.85
+        max_latency_seconds: 20
+    
+    llm_rfq:
+      enabled: true
+      interval: 24
+      ground_truth_path: "data/ground_truth/rfq_features.json"
+      thresholds:
+        min_accuracy: 0.8
+        min_consistency: 0.85
+        max_latency_seconds: 15
+    
+    llm_kyc:
+      enabled: true
+      interval: 48  # Less frequent for stable KYC data
+      ground_truth_path: "data/ground_truth/kyc_features.json"
+      thresholds:
+        min_accuracy: 0.9  # High accuracy required for compliance
+        min_consistency: 0.95
+        max_latency_seconds: 60
+    
+    llm_readership:
+      enabled: true
+      interval: 12  # More frequent for behavioral data
+      ground_truth_path: "data/ground_truth/readership_features.json"
+      thresholds:
+        min_accuracy: 0.7
+        min_consistency: 0.8
+        max_latency_seconds: 25
+    
+    # Data Connectors
+    connector_bloomberg_chat:
+      enabled: true
+      interval: 12
+      thresholds:
+        min_success_rate: 0.95
+        min_throughput: 10  # records per second
+        max_error_rate: 0.05
+        min_data_quality: 0.8
+    
+    connector_refinitiv_chat:
+      enabled: true
+      interval: 12
+      thresholds:
+        min_success_rate: 0.95
+        min_throughput: 8
+        max_error_rate: 0.05
+        min_data_quality: 0.8
+    
+    connector_publications:
+      enabled: true
+      interval: 6  # More frequent for content updates
+      thresholds:
+        min_success_rate: 0.98
+        min_throughput: 5
+        max_error_rate: 0.02
+        min_data_quality: 0.9
+    
+    connector_crm:
+      enabled: true
+      interval: 24
+      thresholds:
+        min_success_rate: 0.99  # Critical business data
+        min_throughput: 20
+        max_error_rate: 0.01
+        min_data_quality: 0.95
+    
+    connector_rfq:
+      enabled: true
+      interval: 12
+      thresholds:
+        min_success_rate: 0.98
+        min_throughput: 15
+        max_error_rate: 0.02
+        min_data_quality: 0.9
+    
+    connector_kyc:
+      enabled: true
+      interval: 48  # Stable compliance data
+      thresholds:
+        min_success_rate: 0.99
+        min_throughput: 5
+        max_error_rate: 0.01
+        min_data_quality: 0.98
+    
+    connector_readership:
+      enabled: true
+      interval: 6  # Real-time behavioral data
+      thresholds:
+        min_success_rate: 0.95
+        min_throughput: 50
+        max_error_rate: 0.05
+        min_data_quality: 0.85
+    
+    # Recommendation Engine
+    recommendations:
+      enabled: true
+      interval: 6  # Frequent evaluation for core functionality
+      thresholds:
+        min_relevance: 0.7
+        min_diversity: 0.6
+        min_coverage: 0.8
+        min_ranking_quality: 0.75
+      sample_size: 100  # Number of recommendations to evaluate
+    
+    # Client Profiling
+    profiling:
+      enabled: true
+      interval: 24
+      thresholds:
+        min_completeness: 0.8
+        min_freshness: 0.7
+        min_consistency: 0.85
+        min_confidence: 0.75
+      sample_size: 50  # Number of profiles to evaluate
+
+# Online Metrics Configuration
+online_metrics:
+  enabled: true
+  
+  # Data Sources
+  data_sources:
+    # Telemetry Database
+    telemetry_db_path: "${TELEMETRY_DB_PATH}"
+    
+    # External Analytics APIs
+    email_analytics_url: "${EMAIL_ANALYTICS_URL}"
+    m360_api_url: "${M360_API_URL}"
+    chat_analytics_url: "${CHAT_ANALYTICS_URL}"
+    
+    # API Authentication
+    api_key: "${ANALYTICS_API_KEY}"
+    
+    # Database connections
+    postgres_connection: "${POSTGRES_CONNECTION_STRING}"
+    redis_connection: "${REDIS_CONNECTION_STRING}"
+  
+  # Metric Calculation Parameters
+  attribution:
+    window_hours: 72  # How long to attribute actions to recommendations
+    confidence_threshold: 0.8
+    
+  engagement_thresholds:
+    high_engagement_time_seconds: 300  # 5 minutes
+    high_engagement_scroll_depth: 0.7  # 70% of content
+    viral_share_threshold: 3  # Shares to be considered viral
+    active_session_minutes: 10
+    
+  business_impact:
+    # Revenue attribution weights
+    email_open_value: 1.0
+    email_click_value: 5.0
+    research_view_value: 10.0
+    research_download_value: 25.0
+    research_share_value: 50.0
+    chat_interaction_value: 15.0
+    m360_login_value: 20.0
+    
+    # Conversion funnel stages
+    funnel_stages:
+      - name: "email_sent"
+        value: 0
+      - name: "email_opened"
+        value: 1
+      - name: "email_clicked"
+        value: 5
+      - name: "research_viewed"
+        value: 10
+      - name: "research_engaged"  # High engagement
+        value: 25
+      - name: "research_shared"
+        value: 50
+      - name: "business_outcome"
+        value: 1000  # Actual business value
+  
+  # Real-time Monitoring
+  monitoring:
+    cache_refresh_interval_minutes: 5
+    alert_thresholds:
+      low_engagement_rate: 0.1  # Below 10% engagement
+      high_error_rate: 0.05     # Above 5% errors
+      low_attribution_rate: 0.2 # Below 20% attribution
+      system_downtime_minutes: 15
+    
+    # Dashboard refresh rates
+    real_time_dashboard_seconds: 30
+    executive_dashboard_minutes: 15
+    detailed_reports_hours: 6
+  
+  # Data Retention
+  retention:
+    raw_events_days: 90
+    aggregated_metrics_days: 365
+    reports_days: 1095  # 3 years
+    
+  # Export and Reporting
+  reporting:
+    formats: ["json", "csv", "html", "pdf"]
+    schedule:
+      daily_summary: "08:00"
+      weekly_report: "MON 09:00"
+      monthly_report: "1st 10:00"
+    
+    recipients:
+      daily_summary: ["product-team@company.com"]
+      weekly_report: ["leadership@company.com", "product-team@company.com"]
+      monthly_report: ["executives@company.com", "board@company.com"]
+
+# Integration Configuration
+integration:
+  # Email notifications
+  email:
+    enabled: true
+    smtp_server: "${SMTP_SERVER}"
+    smtp_port: 587
+    username: "${SMTP_USERNAME}"
+    password: "${SMTP_PASSWORD}"
+    
+  # Monitoring systems
+  monitoring:
+    datadog:
+      enabled: false
+      api_key: "${DATADOG_API_KEY}"
+    
+    prometheus:
+      enabled: true
+      pushgateway_url: "${PROMETHEUS_PUSHGATEWAY_URL}"
+    
+    grafana:
+      enabled: true
+      dashboard_url: "${GRAFANA_DASHBOARD_URL}"
+
+# Environment-specific overrides
+environments:
+  development:
+    offline_evaluation:
+      evaluators:
+        # Reduce evaluation frequency in dev
+        recommendations:
+          interval: 24
+        profiling:
+          interval: 48
+    
+    online_metrics:
+      monitoring:
+        cache_refresh_interval_minutes: 15
+        real_time_dashboard_seconds: 60
+  
+  staging:
+    offline_evaluation:
+      parallel_execution: true
+      max_workers: 2
+    
+    online_metrics:
+      retention:
+        raw_events_days: 30
+        aggregated_metrics_days: 90
+  
+  production:
+    offline_evaluation:
+      parallel_execution: true
+      max_workers: 8
+    
+    online_metrics:
+      monitoring:
+        cache_refresh_interval_minutes: 1
+        real_time_dashboard_seconds: 10
+
+# Alerting Rules
+alerting:
+  rules:
+    - name: "low_recommendation_accuracy"
+      condition: "recommendations.relevance < 0.6"
+      severity: "warning"
+      cooldown_minutes: 60
+      
+    - name: "high_connector_error_rate"
+      condition: "any(connector.error_rate > 0.1)"
+      severity: "critical"
+      cooldown_minutes: 15
+      
+    - name: "llm_latency_spike"
+      condition: "any(llm.latency > 60)"
+      severity: "warning"
+      cooldown_minutes: 30
+      
+    - name: "low_email_engagement"
+      condition: "email.open_rate < 0.1"
+      severity: "warning"
+      cooldown_minutes: 120
+      
+    - name: "system_health_degraded"
+      condition: "system.health_score < 0.8"
+      severity: "critical"
+      cooldown_minutes: 5
+      
+    - name: "attribution_rate_drop"
+      condition: "attribution.rate < 0.15"
+      severity: "warning"
+      cooldown_minutes: 180
+
+# Security and Compliance
+security:
+  # Data privacy
+  anonymization:
+    enabled: true
+    hash_client_ids: true
+    mask_personal_data: true
+    
+  # Access control
+  access_control:
+    require_authentication: true
+    role_based_access: true
+    audit_logging: true
+    
+  # Data encryption
+  encryption:
+    at_rest: true
+    in_transit: true
+    key_rotation_days: 90 

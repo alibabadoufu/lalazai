@@ -1,0 +1,8 @@
+relevance_scoring:
+  file: relevance_scoring.txt
+  version: v1.0
+email_composition:
+  file: email_composition.txt
+  version: v1.0
+
+

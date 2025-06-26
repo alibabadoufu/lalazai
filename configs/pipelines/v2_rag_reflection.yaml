@@ -1,0 +1,54 @@
+pipeline:
+  name: "rag_reflection"
+  version: "2.0"
+  description: "RAG with self-reflection and iterative refinement"
+  type: "recommendation"
+  
+components:
+  retriever:
+    type: "hybrid_search"
+    embedding_model: "text-embedding-ada-002"
+    top_k: 30
+    similarity_threshold: 0.6
+    chunk_size: 512
+    chunk_overlap: 50
+    
+  ranker:
+    type: "multi_stage"
+    model: "gpt-4"
+    temperature: 0.1
+    max_tokens: 1500
+    initial_results: 10
+    max_results: 5
+    
+  reflection:
+    enabled: true
+    max_iterations: 3
+    confidence_threshold: 0.8
+    reflection_model: "gpt-4"
+    improvement_threshold: 0.05
+    
+  generator:
+    type: "enhanced_template"
+    model: "gpt-4"
+    temperature: 0.2
+    max_tokens: 2500
+
+scoring:
+  weights:
+    relevance: 0.5
+    recency: 0.2
+    quality: 0.15
+    diversity: 0.1
+    reflection_score: 0.05
+    
+filtering:
+  min_confidence: 0.6
+  deduplicate: true
+  max_age_days: 90
+  diversity_filtering: true
+
+performance:
+  timeout_seconds: 120
+  retry_attempts: 3
+  batch_size: 8 

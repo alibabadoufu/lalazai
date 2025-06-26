@@ -1,0 +1,58 @@
+app:
+  name: "recommendation_system"
+  version: "2.0.0"
+  environment: "${ENV:-dev}"
+  debug: "${DEBUG:-false}"
+
+logging:
+  level: "${LOG_LEVEL:-INFO}"
+  format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+  file: "logs/recommendation_system.log"
+  max_bytes: 10485760  # 10MB
+  backup_count: 5
+
+database:
+  host: "${DB_HOST:-localhost}"
+  port: "${DB_PORT:-5432}"
+  name: "${DB_NAME:-recsys}"
+  username: "${DB_USER:-recsys_user}"
+  password: "${DB_PASSWORD:-}"
+  pool_size: 10
+  max_overflow: 20
+
+llm:
+  default_provider: "openai"
+  api_timeout: 60
+  max_retries: 3
+  rate_limit: 1000  # requests per hour
+
+vector_store:
+  provider: "pinecone"
+  index_name: "${VECTOR_INDEX:-recsys-embeddings}"
+  dimension: 1536
+  metric: "cosine"
+
+caching:
+  enabled: true
+  backend: "redis"
+  host: "${REDIS_HOST:-localhost}"
+  port: "${REDIS_PORT:-6379}"
+  db: 0
+  ttl: 3600  # 1 hour
+
+monitoring:
+  enabled: true
+  metrics_port: 8080
+  health_check_port: 8081
+  
+security:
+  api_key_required: true
+  rate_limit: 1000  # requests per hour
+  cors_origins: ["*"]
+  
+features:
+  pipeline_versioning: true
+  auto_tuning: true
+  a_b_testing: true
+  batch_processing: true
+  real_time_monitoring: true 

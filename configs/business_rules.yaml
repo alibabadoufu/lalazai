@@ -1,0 +1,12 @@
+lookback_periods_days:
+  chat: 90
+  rfq: 30
+  readership: 180
+  crm: 365
+publication_expiry_days:
+  default: 90
+  morning_comment: 1
+  weekly_report: 7
+  deep_dive: 365
+
+

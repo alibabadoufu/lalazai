@@ -1,0 +1,44 @@
+pipeline:
+  name: "basic_rag"
+  version: "1.0"
+  description: "Basic retrieval-augmented generation pipeline"
+  type: "recommendation"
+  
+components:
+  retriever:
+    type: "vector_search"
+    embedding_model: "text-embedding-ada-002"
+    top_k: 20
+    similarity_threshold: 0.7
+    chunk_size: 512
+    chunk_overlap: 50
+    
+  ranker:
+    type: "llm_scoring"
+    model: "gpt-4"
+    temperature: 0.1
+    max_tokens: 1000
+    max_results: 5
+    
+  generator:
+    type: "template_based"
+    model: "gpt-4"
+    temperature: 0.2
+    max_tokens: 2000
+
+scoring:
+  weights:
+    relevance: 0.6
+    recency: 0.2
+    quality: 0.15
+    diversity: 0.05
+    
+filtering:
+  min_confidence: 0.5
+  deduplicate: true
+  max_age_days: 90
+
+performance:
+  timeout_seconds: 60
+  retry_attempts: 3
+  batch_size: 10 

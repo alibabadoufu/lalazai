@@ -1,0 +1,8 @@
+recommendation_threshold: 65
+scoring_weights:
+  chat: 0.5
+  rfq: 0.2
+  crm: 0.2
+  readership: 0.1
+
+

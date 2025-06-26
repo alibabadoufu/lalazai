@@ -1,0 +1,11 @@
+Compose a daily email report for a salesperson, summarizing client research recommendations. The email should be professional and easy to read. Use the provided subject, at-a-glance summary, and detailed breakdown sections.
+
+Subject: {subject}
+
+At-a-Glance Summary:
+{summary}
+
+Detailed Breakdown:
+{details}
+
+

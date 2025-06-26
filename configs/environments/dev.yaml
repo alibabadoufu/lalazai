@@ -1,0 +1,55 @@
+# Development Environment Configuration
+environment: development
+debug: true
+log_level: DEBUG
+
+# API Configuration
+api:
+  host: "0.0.0.0"
+  port: 8000
+  reload: true
+  workers: 1
+
+# LLM Configuration
+llm:
+  provider: "openai"
+  model: "gpt-3.5-turbo"
+  temperature: 0.7
+  max_tokens: 1000
+  timeout: 30
+
+# Database Configuration  
+database:
+  url: "sqlite:///dev_recommendations.db"
+  echo: true
+  pool_size: 5
+
+# Redis Configuration
+redis:
+  host: "localhost"
+  port: 6379
+  db: 0
+  password: null
+
+# Monitoring
+monitoring:
+  metrics_enabled: true
+  tracing_enabled: true
+  sample_rate: 1.0
+
+# Security
+security:
+  cors_origins: ["http://localhost:3000", "http://localhost:8080"]
+  api_key_required: false
+
+# Pipeline Defaults
+pipeline_defaults:
+  timeout: 120
+  max_retries: 3
+  cache_enabled: true
+  cache_ttl: 3600
+
+# Rate Limiting (disabled in dev)
+rate_limiting:
+  enabled: false
+  requests_per_minute: 1000 
